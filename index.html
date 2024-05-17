@@ -40,16 +40,23 @@
       text-decoration: none;
       background-color: transparent;
     }
+    #search {
+            display: flex;
+            justify-content: space-between;
+        }
   </style>
   <div class="">
     <div class="contensearch container ">
-      <div class="search">
-        <div class="input-group mb-3">
+      <div class="search" id="search">
+        <div class="input-group mb-3" style="width: 800px;">
           <input autocomplete="off" id="input_city_name" type="text" class="form-control basicAutoComplete" placeholder="Thành Phố . .
               ." aria-label="Recipient's username" aria-describedby="basic-addon2">
           <div class="input-group-append">
             <button id="btn_find_city_name" class="btn btn-dark" type="button">Tìm</button>
           </div>
+        </div>
+        <div>
+          <button type="button" class="btn btn-dark" onclick="window.location.href='location.html';">Tìm kiếm địa điểm du lịch</button>
         </div>
       </div>
       <div id="match-list" class=" match-list list-group"></div>
@@ -81,25 +88,23 @@
         <br>
         <a href="test.html">Mở bản đồ</a>
       </div>
-      <div class="travel-options col-sm-3">
+      <!-- <div class="travel-options col-sm-3">
         <h2>Những địa điểm du lịch hợp lý</h2>
-        <ul>
-          
+        <ul>      
           <li>
-            <label for="weather">Thời tiết:</label>
+            <label for="weather">Thời tiết: </label>
             <select id="weather" name="weather">
               <option value="sunny">Nắng</option>
               <option value="rainy">Mưa</option>
               <option value="cloudy">Âm u</option>
-              <!-- Thêm các tùy chọn thời tiết khác nếu cần -->
             </select>
           </li>
           <li>
-            <label for="country1">Quoc gia :</label>
-            <input type="text" id="country1" name="country1" placeholder="Nhập quoc gia">
+            <label for="country1">Quốc gia: </label>
+            <input type="text" id="country1" name="country1" placeholder="Nhập quốc gia">
           </li>
           <li>
-            <label for="temperature">Nhiệt độ:</label>
+            <label for="temperature">Nhiệt độ: </label>
             <input type="number" id="temperature" name="temperature" placeholder="Nhập nhiệt độ">
           </li>
           
@@ -107,10 +112,8 @@
         <div class="button-container">
           <button type="button" class="btn btn-primary" id="search-btn">Tìm kiếm</button>
         </div>
-      </div>
-    </div>
-
-
+      </div>-->
+    </div> 
   </div>
 
   <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
