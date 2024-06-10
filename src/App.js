@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import Weather from './Login';
+import Weather from './Weather';
 import WeatherMap from './Map';
 import WeatherChart from './Chart';
 
