@@ -13,6 +13,7 @@ function Weather() {
     const [tempMin, setTempMin] = useState('');
     const [tempMax, setTempMax] = useState('');
     const [error, setError] = useState(null);
+    const [weatherCondition, setWeatherCondition] = useState("clear");
     const history = useNavigate();
 
     const handleNavigateToMap = () => {
@@ -36,14 +37,17 @@ function Weather() {
             })
             .then(data => {
                 setWeatherData(data);
-                setError(null); // Reset error on successful fetch
+                setWeatherCondition(data.list[0].weather[0].main); 
+                console.log(data.list[0].weather[0].main)
+                setError(null); 
             })
             .catch(error => {
                 console.error('Error fetching weather data:', error);
                 setError('Tên thành phố không hợp lệ');
-                setWeatherData(null); // Reset weather data on error
+                setWeatherData(null); 
             });
     };
+    
 
     useEffect(() => {
         if (weatherData && weatherData.list && weatherData.list[0] && weatherData.list[0].main && weatherData.list[0].weather && weatherData.list[0].weather[0]) {
@@ -71,16 +75,18 @@ function Weather() {
         return days[dayIndex];
     }
 
-    function getTemperature(index, timeOfDay) {
-        const weather = weatherData.list[index];
-        if (!weather || !weather.temp) return '';
-
-        const temperature = timeOfDay === 'day' ? weather.temp.day : weather.temp.night;
-        return Math.round(temperature);
-    }
-
+   
+      
     return (
-        <div className="h-screen bg-cover bg-no-repeat bg-[url('./imgbackground/quandang.jpg')] text-white">
+        <div
+        className={`h-screen bg-cover bg-no-repeat text-white ${
+          weatherCondition === "Clouds"
+            ? "bg-[url('./imgbackground/cloud.jpg')]"
+            : weatherCondition === "Rain"
+            ? "bg-[url('./imgbackground/rain.jpg')]"
+            : "bg-[url('./imgbackground/quandang.jpg')]" 
+        }`}
+      >
             <div className="flex flex-col md:flex-row justify-around items-start md:items-center px-4 gap-4">
                 <div className="flex-1 p-4 rounded-lg mt-14 items-center">
                     <div className="p-4 rounded-lg bg-gray-400 bg-opacity-50 border border-white inline-block">
