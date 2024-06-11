@@ -1,20 +1,21 @@
-
 import React, { useState, useEffect } from 'react';
-import { GoogleMap, LoadScript, Marker, InfoWindow } from '@react-google-maps/api';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
 
-const containerStyle = {
-  width: '100%',
-  height: '500px'
-};
+// Fix marker icons issue in Leaflet with React
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+});
 
-const defaultCenter = {
-  lat: 10.8231,
-  lng: 106.6297
-};
+const defaultCenter = [10.8231, 106.6297];
+const defaultZoom = 5;
 
 function Map() {
   const [selectedCountry, setSelectedCountry] = useState(null);
-  const [weather, setWeather] = useState(null);
   const [cities, setCities] = useState([]);
   const [inputCountry, setInputCountry] = useState('');
   const [inputTemp, setInputTemp] = useState('');
@@ -63,6 +64,22 @@ function Map() {
     }
   };
 
+  const fetchCountryCoordinates = async (countryName) => {
+    try {
+      const response = await fetch(`https://nominatim.openstreetmap.org/search?country=${countryName}&format=json&limit=1`);
+      const data = await response.json();
+      if (data.length > 0) {
+        const { lat, lon } = data[0];
+        setSelectedCountry({ name: countryName, lat: parseFloat(lat), lng: parseFloat(lon) });
+      } else {
+        setError('Không tìm thấy quốc gia.');
+      }
+    } catch (error) {
+      setError('Có lỗi xảy ra trong quá trình tìm kiếm tọa độ quốc gia. Vui lòng thử lại.');
+      console.error('Error fetching country coordinates:', error);
+    }
+  };
+
   const handleInputChange = (event) => {
     setInputCountry(event.target.value);
   };
@@ -74,36 +91,24 @@ function Map() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     await fetchCitiesWeather(inputCountry, inputTemp);
+    await fetchCountryCoordinates(inputCountry);
   };
 
   return (
     <div>
-      <LoadScript googleMapsApiKey="AIzaSyD55258OJ4jmwW_4S7XhaM-nPrnlsMc1J4">
-        <GoogleMap
-          mapContainerStyle={containerStyle}
-          center={defaultCenter}
-          zoom={5}
-        >
-          {selectedCountry && (
-            <Marker
-              position={{ lat: selectedCountry.lat, lng: selectedCountry.lng }}
-              onClick={() => setSelectedCountry(null)}
-            >
-              <InfoWindow onCloseClick={() => setSelectedCountry(null)}>
-                <div>
-                  <h3>{selectedCountry.name}</h3>
-                  {weather && (
-                    <div>
-                      <p>Temperature: {Math.round(weather.main.temp - 273.15)}°C</p>
-                      <p>Weather: {weather.weather[0].description}</p>
-                    </div>
-                  )}
-                </div>
-              </InfoWindow>
-            </Marker>
-          )}
-        </GoogleMap>
-      </LoadScript>
+      <MapContainer style={{ width: '100%', height: '500px' }} center={defaultCenter} zoom={defaultZoom}>
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        />
+        {selectedCountry && (
+          <Marker position={[selectedCountry.lat, selectedCountry.lng]}>
+            <Popup>
+              <h3>{selectedCountry.name}</h3>
+            </Popup>
+          </Marker>
+        )}
+      </MapContainer>
       <form onSubmit={handleSubmit} className="mt-4 container flex items-center justify-center">
         <input type="text" value={inputCountry} onChange={handleInputChange} placeholder="Nhập tên quốc gia" className='border border-gray p-4 m-4' />
         <input type="number" value={inputTemp} onChange={handleTempChange} placeholder="Nhập nhiệt độ (°C)" className='border border-gray p-4 m-4' />
@@ -152,4 +157,3 @@ function Map() {
 }
 
 export default Map;
-
