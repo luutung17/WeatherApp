@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Modal } from "antd";
 import TimeDisplay from "./Time";
 import Temperature from "./temperature";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const API_KEY = "1779ca818b59557aa48558aec376d6db";
 
@@ -139,8 +139,10 @@ function Weather() {
                             <span className="chitiet">Chi tiết dự báo hôm nay</span>
                         </button>
                         <div className="mt-2">
-                            <a href="test.html" className="text-yellow-400 underline inline-block ml-14">Mở bản đồ</a>
+                            <Link to={'/check-uv'} className="text-yellow-400 underline inline-block  ml-6">Tia UV và chất lượng</Link>
+                            
                         </div>
+                        <Link to={'/history'} className="text-yellow-400 underline inline-block  ml-10">Lịch sử tìm kiếm</Link>
                     </div>
                 </div>
 
@@ -229,16 +231,7 @@ function Weather() {
                 </div>
             </div>
 
-            <div className="flex flex-col items-center mt-8">
-                <h3 className="text-2xl font-bold text-white mb-4">Lịch sử tìm kiếm</h3>
-                <ul className="list-disc list-inside text-white">
-                    {searchHistory.map((historyItem, index) => (
-                        <li key={index} className="cursor-pointer" onClick={() => handleHistoryClick(historyItem)}>
-                            {historyItem}
-                        </li>
-                    ))}
-                </ul>
-            </div>
+           
 
             <Modal
                 title="Dự báo thời tiết hôm nay"
